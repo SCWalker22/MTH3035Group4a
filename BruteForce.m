@@ -5,7 +5,7 @@ A = [1 2 4 0;...
     0 2 0 8;...
     1 0 13 2];
 
-p = perms(1:n);
+p = perms(1:n); %Create all permutations
 
 p(1, :)
 
