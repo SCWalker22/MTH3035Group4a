@@ -61,4 +61,3 @@ title(['cost = ',num2str(cost)])
 set(gca,'fontsize',16)
 fullcost = m*(m+1)*(2*m+1)/6 + m*(m-1)/2
 bestcost = sum(Aopt,'all')
-
