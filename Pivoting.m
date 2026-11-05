@@ -10,14 +10,16 @@ A = [1 0 0 1 1 0 0 0 0 0 0;...
     0 0 0 0 1 1 0 1 0 0 0;...
     0 0 0 0 1 1 0 0 1 0 0];
 
-num_non_zeros = nnz(A)
+num_non_zeros = nnz(A);
 
-[L, U, P] = lu(A) %Numerial partial pivoting on A
+S = sparse(A);
 
-thresh = 0.6
+[L, U, P, Q] = lu(S); %Numerial partial pivoting on A
 
-[L_t, U_t, P_t] = lu(A, thresh)
+thresh = 1;
 
-nnz(A)
-nnz(lu(A))
-nnz(lu(A, thresh))
+[L_t, U_t, P_t, Q_t] = lu(S, thresh);
+
+nnz(S)
+nnz(lu(S))
+nnz(lu(S, thresh))
