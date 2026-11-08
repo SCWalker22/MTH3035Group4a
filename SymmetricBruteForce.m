@@ -43,8 +43,8 @@ A = [21  1  1  1  1  1  1  1;
 
 % check A spd
 [A_L, flag] = chol(A,'lower');
-if flag+~(issymmetric(A)) >0
-    error('A is not spd.')
+if flag+~(issymmetric(A)) >0 
+    error('A is not spd.') 
 end
 
 
@@ -84,6 +84,8 @@ worst = sorted_result(k,:);
 % super basic histogram of "number of permutations that give x amount of fill-in"
 fill_in_vector = sorted_result(:,2);
 histogram(fill_in_vector);
+ylabel('Number of permutations');
+xlabel('Fill-in produced');
 
 
 
