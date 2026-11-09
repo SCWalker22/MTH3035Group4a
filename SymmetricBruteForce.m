@@ -1,4 +1,4 @@
-
+% 
 % A = [11, 1, 1, 1;
 %     1, 12, 1, 0;
 %     1, 1, 13, 0;
@@ -14,15 +14,24 @@
 %     1, 1, 1, 0, 0, 0, 17];
 % Random 7x7 example matrix, where fill-in is unavoidable.
 
+% A = [11, 0, 0, 0, 0, 1, 1;
+%     0, 12, 1, 1, 1, 0, 1;
+%     0, 1, 13, 0, 0, 0, 1;
+%     0, 1, 0, 14, 0, 0, 1;
+%     0, 1, 0, 0, 15, 0, 0;
+%     1, 0, 0, 0, 0, 16, 0;
+%     1, 1, 1, 1, 0, 0, 17];
+% Random 7x7 example matrix, where AMD<RCM (fill-in).
+% *Its hard to get an example with RCM<AMB.
 
-A = [21  1  1  1  1  1  1  1;
-   1 12  0  0  0  0  0  0;
-   1  0 13  0  0  0  0  0;
-   1  0  0 14  0  0  0  0;
-   1  0  0  0 15  0  0  0;
-   1  0  0  0  0 16  0  0;
-   1  0  0  0  0  0 17  0;
-   1  0  0  0  0  0  0 18];
+% A = [21  1  1  1  1  1  1  1;
+%    1 12  0  0  0  0  0  0;
+%    1  0 13  0  0  0  0  0;
+%    1  0  0 14  0  0  0  0;
+%    1  0  0  0 15  0  0  0;
+%    1  0  0  0  0 16  0  0;
+%    1  0  0  0  0  0 17  0;
+%    1  0  0  0  0  0  0 18];
 % This 8x8 matrix is interesting because the Graph representation is like a
 % star centered on vertex 1. (the only Edges are "1 to j" for j=2,...,8).
 
@@ -39,6 +48,17 @@ A = [21  1  1  1  1  1  1  1;
 % to eliminate before Vertex 1 (which has degree=7 initially)
 
 
+A = [21,  1,  1,  1,  1,  1,  1,  1,  1,  1;
+    1, 12,  0,  0,  0,  0,  0,  0,  0,  1;
+    1,  0, 13,  0,  0,  0,  0,  0,  0,  1;
+    1,  0,  0, 14,  0,  0,  0,  0,  1,  0;
+    1,  0,  0,  0, 15,  0,  0,  1,  0,  0;
+    1,  0,  0,  0,  0, 16,  1,  0,  0,  0;
+    1,  0,  0,  0,  0,  1, 17,  1,  0,  1;
+    1,  0,  0,  0,  1,  0,  1, 18,  1,  0;
+    1,  0,  0,  1,  0,  0,  0,  1, 19,  0;
+    1,  1,  1,  0,  0,  0,  1,  0,  0, 20];
+% Random 10x10 example matrix, where optimal<AMD<RCM (fill-in).
 
 
 % check A spd
@@ -48,22 +68,20 @@ if flag+~(issymmetric(A)) >0
 end
 
 
-
+% Finding best perm
 n = size(A,1);
-
 p = perms(1:n);
-
 k = factorial(n);
 
-result = zeros(k,n+2); % preallocate result matrix
+result = zeros(k,n+2); 
 
 for i = 1:k
     q = p(i,:);
-    A_perm = A(q,q); % only symmetric permutations of A
+    A_perm = A(q,q); 
 
-    [L] = chol(A_perm,'lower'); % single output form (no partial pivoting) of 'chol' 
-    m = nnz(L);
-    fill_in = m - nnz(tril(A_perm));
+    [L] = chol(A_perm,'lower'); 
+
+    fill_in = nnz(L) - nnz(tril(A_perm));
 
     result(i,:) = [i, fill_in, q]; 
 end
@@ -74,10 +92,10 @@ end
 
 sorted_result = sortrows(result, [2,1]);
 
-best = sorted_result(1,:);
-worst = sorted_result(k,:);
+best_perm = sorted_result(1,3:end);
+worst_perm = sorted_result(k,3:end);
 
-
+min_fill_in = sorted_result(1,2); % = best_perm_fill_in 
 
 
 
@@ -92,40 +110,66 @@ xlabel('Fill-in produced');
 
 
 
-% sparsity comparison plot for A, AMD A, RCM A.
+% Sparsity comparison plot for: original A, optimal A, AMD A, RCM A.
+% Also compares their fill-in after chol fac.
+
+[original_L] = chol(A,'lower');
+original_fill_in = nnz(original_L) - nnz(tril(A));
+
+[best_perm_L] = chol(A(best_perm, best_perm),'lower');
+best_perm_fill_in = nnz(best_perm_L) - nnz(tril(A(best_perm, best_perm)));
+
 
 amd_perm = amd(sparse(A));
-amd_L = chol(A(amd_perm,amd_perm),'lower');
+[amd_L] = chol(A(amd_perm,amd_perm),'lower');
+amd_fill_in = nnz(amd_L) - nnz(tril(A(amd_perm,amd_perm)));
+
 
 rcm_perm = symrcm(sparse(A));
-rcm_L = chol(A(rcm_perm,rcm_perm),'lower');
+[rcm_L] = chol(A(rcm_perm,rcm_perm),'lower');
+rcm_fill_in = nnz(rcm_L) - nnz(tril(A(rcm_perm,rcm_perm)));
+
+
 
 
 figure
 
-subplot(2,3,1)
+subplot(2,4,1)
 spy(A)
-title('Original Matrix A')
+title('A')
 
-subplot(2,3,2) 
+subplot(2,4,2)
+spy(A(best_perm,best_perm))
+title('optimal A')
+
+subplot(2,4,3) 
 spy(A(amd_perm,amd_perm))
-title('AMD ordered A')
+title('AMD A')
 
-subplot(2,3,3)
+subplot(2,4,4)
 spy(A(rcm_perm,rcm_perm))
-title('RCM ordered A')
+title('RCM A')
 
-subplot(2,3,4) 
+subplot(2,4,5) 
 spy(A_L)
-title('Cholesky factor of A')
+title('chol A')
+xlabel(sprintf('Fill-in: %d', original_fill_in))
 
-subplot(2,3,5) 
+subplot(2,4,6) 
+spy(best_perm_L)
+title('chol optimal A')
+xlabel(sprintf('Fill-in: %d', best_perm_fill_in))
+
+subplot(2,4,7) 
 spy(amd_L)
-title('Cholesky factor of AMD ordered A')
+title('chol AMD A')
+xlabel(sprintf('Fill-in: %d', amd_fill_in))
 
-subplot(2,3,6) 
+
+subplot(2,4,8) 
 spy(rcm_L)
-title('Cholesky factor of RCM ordered A')
+title('chol RCM A')
+xlabel(sprintf('Fill-in: %d', rcm_fill_in))
 
 
 
