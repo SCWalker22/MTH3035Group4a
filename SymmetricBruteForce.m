@@ -147,8 +147,8 @@ spy(A(amd_perm,amd_perm))
 title('AMD A')
 
 subplot(2,4,4)
-spy(P*A)
-title('Pivoting A')
+spy(A(rcm_perm, rcm_perm))
+title('RCM A')
 
 %subplot(2, 4, 5)
 %spy(pivot)
