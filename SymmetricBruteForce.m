@@ -129,7 +129,7 @@ rcm_perm = symrcm(sparse(A));
 [rcm_L] = chol(A(rcm_perm,rcm_perm),'lower');
 rcm_fill_in = nnz(rcm_L) - nnz(tril(A(rcm_perm,rcm_perm)));
 
-[L, U, P] = lu(sparse(A));
+%[pivot_perm, Q] = MarkowitzPivoting(A);
 
 
 figure
