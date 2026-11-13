@@ -1,4 +1,4 @@
-% 
+
 % A = [11, 1, 1, 1;
 %     1, 12, 1, 0;
 %     1, 1, 13, 0;
@@ -14,13 +14,13 @@
 %     1, 1, 1, 0, 0, 0, 17];
 % Random 7x7 example matrix, where fill-in is unavoidable.
 
-% A = [11, 0, 0, 0, 0, 1, 1;
-%     0, 12, 1, 1, 1, 0, 1;
-%     0, 1, 13, 0, 0, 0, 1;
-%     0, 1, 0, 14, 0, 0, 1;
-%     0, 1, 0, 0, 15, 0, 0;
-%     1, 0, 0, 0, 0, 16, 0;
-%     1, 1, 1, 1, 0, 0, 17];
+A = [11, 0, 0, 0, 0, 1, 1;
+    0, 12, 1, 1, 1, 0, 1;
+    0, 1, 13, 0, 0, 0, 1;
+    0, 1, 0, 14, 0, 0, 1;
+    0, 1, 0, 0, 15, 0, 0;
+    1, 0, 0, 0, 0, 16, 0;
+    1, 1, 1, 1, 0, 0, 17];
 % Random 7x7 example matrix, where AMD<RCM (fill-in).
 % *Its hard to get an example with RCM<AMB.
 
@@ -32,8 +32,8 @@
 %    1  0  0  0  0 16  0  0;
 %    1  0  0  0  0  0 17  0;
 %    1  0  0  0  0  0  0 18];
-% This 8x8 matrix is interesting because the Graph representation is like a
-% star centered on vertex 1. (the only Edges are "1 to j" for j=2,...,8).
+% % This 8x8 matrix is interesting because the graph representation is like a
+% star centered on Vertex 1. (the only Edges are "1 to j" for j=2,...,8).
 
 % In the first step, eliminating Vertex 1 first would create a lot of
 % fill-in, but eliminating any other Vertex would create no fill-in.
@@ -48,16 +48,16 @@
 % to eliminate before Vertex 1 (which has degree=7 initially)
 
 
-A = [21,  1,  1,  1,  1,  1,  1,  1,  1,  1;
-    1, 12,  0,  0,  0,  0,  0,  0,  0,  1;
-    1,  0, 13,  0,  0,  0,  0,  0,  0,  1;
-    1,  0,  0, 14,  0,  0,  0,  0,  1,  0;
-    1,  0,  0,  0, 15,  0,  0,  1,  0,  0;
-    1,  0,  0,  0,  0, 16,  1,  0,  0,  0;
-    1,  0,  0,  0,  0,  1, 17,  1,  0,  1;
-    1,  0,  0,  0,  1,  0,  1, 18,  1,  0;
-    1,  0,  0,  1,  0,  0,  0,  1, 19,  0;
-    1,  1,  1,  0,  0,  0,  1,  0,  0, 20];
+% A = [21,  1,  1,  1,  1,  1,  1,  1,  1,  1;
+%     1, 12,  0,  0,  0,  0,  0,  0,  0,  1;
+%     1,  0, 13,  0,  0,  0,  0,  0,  0,  1;
+%     1,  0,  0, 14,  0,  0,  0,  0,  1,  0;
+%     1,  0,  0,  0, 15,  0,  0,  1,  0,  0;
+%     1,  0,  0,  0,  0, 16,  1,  0,  0,  0;
+%     1,  0,  0,  0,  0,  1, 17,  1,  0,  1;
+%     1,  0,  0,  0,  1,  0,  1, 18,  1,  0;
+%     1,  0,  0,  1,  0,  0,  0,  1, 19,  0;
+%     1,  1,  1,  0,  0,  0,  1,  0,  0, 20];
 % Random 10x10 example matrix, where optimal<AMD<RCM (fill-in).
 
 
@@ -176,4 +176,8 @@ title('chol RCM A')
 xlabel(sprintf('Fill-in: %d', rcm_fill_in))
 
 
+%todo
+% add markowitz pivoting and nested dissection
+% add labels for where amd, rcm, mpiv, nd. perms appear on the histogram
 
+dissect(A)
