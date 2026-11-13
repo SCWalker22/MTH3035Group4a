@@ -1,6 +1,6 @@
 % Solving the poisson problem
 
-m = 3; % define grid size
+m = 10; % define grid size
 del_x = 1/m; % define grid spacing
 
 alpha = 2; % define coefficient alpha
