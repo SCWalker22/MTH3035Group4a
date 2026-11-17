@@ -129,9 +129,9 @@ rcm_perm = symrcm(sparse(A));
 [rcm_L] = chol(A(rcm_perm,rcm_perm),'lower');
 rcm_fill_in = nnz(rcm_L) - nnz(tril(A(rcm_perm,rcm_perm)));
 
-[pivot_perm, Q] = MarkowitzPivoting(A);
-pivot_L = chol(A(pivot_perm, pivot_perm), 'lower');
-pivot_fill_in = nnz(pivot_L) - nnz(tril(A(pivot_perm, pivot_perm)));
+[pivot_row_perm, pivot_col_perm] = MarkowitzPivoting(A);
+pivot_L = chol(A(pivot_row_perm, pivot_col_perm), 'lower');
+pivot_fill_in = nnz(pivot_L) - nnz(tril(A(pivot_row_perm, pivot_col_perm)));
 
 
 figure
@@ -153,7 +153,7 @@ spy(A(rcm_perm, rcm_perm))
 title('RCM A')
 
 %subplot(2, 4, 5)
-%spy(A(pivot_perm, pivot_perm))
+%spy(A(pivot_row_perm, pivot_col_perm))
 %title('Pivoting A')
 
 subplot(2,4,5) 
