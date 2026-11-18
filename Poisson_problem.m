@@ -12,7 +12,7 @@ r = -del_x^2 * randi([0 1], N, 1)   %ones(N,1);
 
 
 rows = zeros(5*N,1); cols = zeros(5*N,1); vals = zeros(5*N,1);
-k = 0;
+
 for I= 1:N
     ir = mod(I,m) + floor((I-1)/m)*m + 1; % i+1, periodic wrap, ir is i right
     il = mod(I-2,m) + floor((I-1)/m)*m + 1; % i-1, periodic wrap, il is i left
@@ -22,11 +22,9 @@ for I= 1:N
     % f_{I+1} + f_{I-1} + f_{I+M} +f_{I-M} - (4 + \alpha^2 * \del{x^2})*f_{I} = \del{x^2}*r_{I}
     % forms the equation above by adding add to the kth row the coefficient
     % of f as vals(k) at the column which is the Ith index of f 
-    k = k+1; rows(k) = I; cols(k) = I;  vals(k) = -(4 + alpha^2*del_x^2);
-    k = k+1; rows(k) = I; cols(k) = ir; vals(k) = 1;
-    k = k+1; rows(k) = I; cols(k) = il; vals(k) = 1;
-    k = k+1; rows(k) = I; cols(k) = ju; vals(k) = 1;
-    k = k+1; rows(k) = I; cols(k) = jd; vals(k) = 1;
+    rows(5 * I - 4:5 * I) = I;
+    cols(5 * I - 4:5 * I) = [I ir il ju jd];
+    vals(5 * I - 4:5 * I) = [-(4 + alpha ^ 2 * del_x ^ 2) 1 1 1 1];
 end
 
 
