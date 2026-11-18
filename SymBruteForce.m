@@ -75,10 +75,13 @@ m = length(matrices);
 matrices_names = ["Original", "Optimal", "RCM", "AMD", "Markowitz"];
 
 % histogram for number of permutations that gave each fill-in value
+figure
 histogram(fill_ins);
+title("Permutation count for each fill-in value")
 ylabel("Number of permutations");
 xlabel("Fill-in");
 
+% sparsity plots
 figure
 for i = 1:m
     plot_sparsity(matrices{i}, matrices_names(i), m, i)
