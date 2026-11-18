@@ -65,14 +65,14 @@ A_AMD = A(AMD_perm, AMD_perm);
 
 % Markowitz A
 Markowitz_perm = MarkowitzPivoting(A);
-Markowitz_A = A(Markowitz_perm, Markowitz_perm);
+A_Markowitz = A(Markowitz_perm, Markowitz_perm);
 
 % nested dissection
 dissection_perm = dissect(A);
-dissection_A = A(dissection_perm, dissection_perm);
+A_dissection = A(dissection_perm, dissection_perm);
 
 % cell array of matrices
-matrices = {A, A_opt, A_RCM, A_AMD, Markowitz_A, dissection_A};
+matrices = {A, A_opt, A_RCM, A_AMD, A_Markowitz, A_dissection};
 m = length(matrices);
 
 % names of matrices
