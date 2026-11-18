@@ -40,12 +40,12 @@ fill_ins = zeros(k, 1); % fill-in for each permutation
 % brute force
 for i = 1:k
     % reorder A
-    q = p(i, :);
-    A_perm = A(q, q);
+    perm = p(i, :);
+    A_perm = A(perm, perm);
 
     % fill-in
-    L = chol(A_perm, "lower");
-    fill_in = nnz(L) - nnz(tril(A_perm));
+    A_chol = chol(A_perm, "lower");
+    fill_in = nnz(A_chol) - nnz(tril(A_perm));
 
     fill_ins(i) = fill_in;
 end
