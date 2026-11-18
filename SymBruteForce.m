@@ -1,7 +1,6 @@
 % Notes: 
 %   - different version of brute force, not necessarily better than 
 %     other, used code from other
-%   - histogram not added
 %   - A's of interest not added
 
 % plots sparsity of matrix and cholesky of matrix
@@ -36,8 +35,7 @@ p = perms(1:n); % all permutations
 
 k = factorial(n); % length of p
 
-% storing results, rows: [fill-in, permutation]
-results = zeros(k, n + 1);
+fill_ins = zeros(k, 1); % fill-in for each permutation
 
 % brute force
 for i = 1:k
@@ -49,13 +47,12 @@ for i = 1:k
     L = chol(A_perm, "lower");
     fill_in = nnz(L) - nnz(tril(A_perm));
 
-    results(i, :) = [fill_in, q];
+    fill_ins(i) = fill_in;
 end
 
 % optimal A
-[~, I] = min(results(:, 1)); % row with minimum fill-in
-min_fill = results(I, :);
-opt_perm = min_fill(2:end);
+[~, I] = min(fill_ins); % row index with minimum fill-in
+opt_perm = p(I, :);
 A_opt = A(opt_perm, opt_perm);
 
 % RCM A
@@ -76,6 +73,11 @@ m = length(matrices);
 
 % names of matrices
 matrices_names = ["Original", "Optimal", "RCM", "AMD", "Markowitz"];
+
+% histogram for number of permutations that gave each fill-in value
+histogram(fill_ins);
+ylabel("Number of permutations");
+xlabel("Fill-in");
 
 figure
 for i = 1:m
