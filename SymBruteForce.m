@@ -3,23 +3,22 @@
 %     other, used code from other
 %   - histogram not added
 %   - A's of interest not added
-%   - no Markowitz yet
 
 % plots sparsity of matrix and cholesky of matrix
-function plot_sparsity(matrix, name, index)
+function plot_sparsity(matrix, name, m, index)
     matrix_chol = chol(matrix, "lower");
     
-    % fill in
+    % fill-in
     matrix_fill = nnz(matrix_chol) - nnz(tril(matrix)); 
 
     % plotting
     % sparsity pattern
-    subplot(2, 4, index)
+    subplot(2, m, index)
     spy(matrix)
     title(name + " A")
 
     % chol sparsity pattern
-    subplot(2, 4, index + 4)
+    subplot(2, m, index + m)
     spy(matrix_chol)
     title("Chol " + name + " A")
     xlabel("Fill-in: " + matrix_fill)
@@ -37,7 +36,7 @@ p = perms(1:n); % all permutations
 
 k = factorial(n); % length of p
 
-% storing results, rows: [fill in, permutation]
+% storing results, rows: [fill-in, permutation]
 results = zeros(k, n + 1);
 
 % brute force
@@ -46,7 +45,7 @@ for i = 1:k
     q = p(i, :);
     A_perm = A(q, q);
 
-    % fill in
+    % fill-in
     L = chol(A_perm, "lower");
     fill_in = nnz(L) - nnz(tril(A_perm));
 
@@ -54,7 +53,7 @@ for i = 1:k
 end
 
 % optimal A
-[~, I] = min(results(:, 1)); % row with minimum fill in
+[~, I] = min(results(:, 1)); % row with minimum fill-in
 min_fill = results(I, :);
 opt_perm = min_fill(2:end);
 A_opt = A(opt_perm, opt_perm);
@@ -67,14 +66,18 @@ A_RCM = A(RCM_perm, RCM_perm);
 AMD_perm = amd(A);
 A_AMD = A(AMD_perm, AMD_perm);
 
+% Markowitz A
+Markowitz_perm = MarkowitzPivoting(A);
+Markowitz_A = A(Markowitz_perm, Markowitz_perm);
 
 % cell array of matrices
-matrices = {A, A_opt, A_RCM, A_AMD};
+matrices = {A, A_opt, A_RCM, A_AMD, Markowitz_A};
+m = length(matrices);
 
 % names of matrices
-matrices_names = ["Original", "Optimal", "RCM", "AMD"];
+matrices_names = ["Original", "Optimal", "RCM", "AMD", "Markowitz"];
 
 figure
-for i = 1:length(matrices)
-    plot_sparsity(matrices{i}, matrices_names(i), i)
+for i = 1:m
+    plot_sparsity(matrices{i}, matrices_names(i), m, i)
 end
