@@ -14,13 +14,13 @@
 %     1, 1, 1, 0, 0, 0, 17];
 % Random 7x7 example matrix, where fill-in is unavoidable.
 
-A = [11, 0, 0, 0, 0, 1, 1;
-    0, 12, 1, 1, 1, 0, 1;
-    0, 1, 13, 0, 0, 0, 1;
-    0, 1, 0, 14, 0, 0, 1;
-    0, 1, 0, 0, 15, 0, 0;
-    1, 0, 0, 0, 0, 16, 0;
-    1, 1, 1, 1, 0, 0, 17];
+% A = [11, 0, 0, 0, 0, 1, 1;
+%     0, 12, 1, 1, 1, 0, 1;
+%     0, 1, 13, 0, 0, 0, 1;
+%     0, 1, 0, 14, 0, 0, 1;
+%     0, 1, 0, 0, 15, 0, 0;
+%     1, 0, 0, 0, 0, 16, 0;
+%     1, 1, 1, 1, 0, 0, 17];
 % Random 7x7 example matrix, where AMD<RCM (fill-in).
 % *Its hard to get an example with RCM<AMB.
 
@@ -48,16 +48,16 @@ A = [11, 0, 0, 0, 0, 1, 1;
 % to eliminate before Vertex 1 (which has degree=7 initially)
 
 
-% A = [21,  1,  1,  1,  1,  1,  1,  1,  1,  1;
-%     1, 12,  0,  0,  0,  0,  0,  0,  0,  1;
-%     1,  0, 13,  0,  0,  0,  0,  0,  0,  1;
-%     1,  0,  0, 14,  0,  0,  0,  0,  1,  0;
-%     1,  0,  0,  0, 15,  0,  0,  1,  0,  0;
-%     1,  0,  0,  0,  0, 16,  1,  0,  0,  0;
-%     1,  0,  0,  0,  0,  1, 17,  1,  0,  1;
-%     1,  0,  0,  0,  1,  0,  1, 18,  1,  0;
-%     1,  0,  0,  1,  0,  0,  0,  1, 19,  0;
-%     1,  1,  1,  0,  0,  0,  1,  0,  0, 20];
+A = [21,  1,  1,  1,  1,  1,  1,  1,  1,  1;
+    1, 12,  0,  0,  0,  0,  0,  0,  0,  1;
+    1,  0, 13,  0,  0,  0,  0,  0,  0,  1;
+    1,  0,  0, 14,  0,  0,  0,  0,  1,  0;
+    1,  0,  0,  0, 15,  0,  0,  1,  0,  0;
+    1,  0,  0,  0,  0, 16,  1,  0,  0,  0;
+    1,  0,  0,  0,  0,  1, 17,  1,  0,  1;
+    1,  0,  0,  0,  1,  0,  1, 18,  1,  0;
+    1,  0,  0,  1,  0,  0,  0,  1, 19,  0;
+    1,  1,  1,  0,  0,  0,  1,  0,  0, 20];
 % Random 10x10 example matrix, where optimal<AMD<RCM (fill-in).
 
 
@@ -69,6 +69,7 @@ end
 
 
 % Finding best perm
+
 n = size(A,1);
 p = perms(1:n);
 k = factorial(n);
@@ -136,51 +137,51 @@ pivot_fill_in = nnz(pivot_L) - nnz(tril(A(pivot_row_perm, pivot_col_perm)));
 
 figure
 
-subplot(2,4,1)
+subplot(2,5,1)
 spy(A)
 title('A')
 
-subplot(2,4,2)
+subplot(2,5,2)
 spy(A(best_perm,best_perm))
 title('optimal A')
 
-subplot(2,4,3) 
+subplot(2,5,3) 
 spy(A(amd_perm,amd_perm))
 title('AMD A')
 
-subplot(2,4,4)
+subplot(2,5,4)
 spy(A(rcm_perm, rcm_perm))
 title('RCM A')
 
-%subplot(2, 4, 5)
-%spy(A(pivot_row_perm, pivot_col_perm))
-%title('Pivoting A')
+subplot(2, 5, 5)
+spy(A(pivot_row_perm, pivot_col_perm))
+title('Pivoting A')
 
-subplot(2,4,5) 
+subplot(2,5,6) 
 spy(A_L)
 title('chol A')
 xlabel(sprintf('Fill-in: %d', original_fill_in))
 
-subplot(2,4,6) 
+subplot(2,5,7) 
 spy(best_perm_L)
 title('chol optimal A')
 xlabel(sprintf('Fill-in: %d', best_perm_fill_in))
 
-subplot(2,4,7) 
+subplot(2,5,8) 
 spy(amd_L)
 title('chol AMD A')
 xlabel(sprintf('Fill-in: %d', amd_fill_in))
 
 
-subplot(2,4,8) 
+subplot(2,5,9) 
 spy(rcm_L)
 title('chol RCM A')
 xlabel(sprintf('Fill-in: %d', rcm_fill_in))
 
-%subplot(2, 4, 9)
-%spy(pivot_L)
-%title('chol Pivot A')
-%xlabel(sprintf('Fill-in: %d', pivot_fill_in))
+subplot(2, 5, 10)
+spy(pivot_L)
+title('chol Pivot A')
+xlabel(sprintf('Fill-in: %d', pivot_fill_in))
 
 %todo
 % add nested dissection
