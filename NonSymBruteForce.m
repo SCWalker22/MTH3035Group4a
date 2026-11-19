@@ -61,8 +61,8 @@ AMD_perm = amd(A);
 A_AMD = A(AMD_perm, AMD_perm);
 
 % Markowitz A
-Markowitz_perm = MarkowitzPivoting(A);
-A_Markowitz = A(Markowitz_perm, Markowitz_perm);
+[P, Q] = MarkowitzPivoting(A);
+A_Markowitz = A(P, Q);
 
 % nested dissection A
 dissection_perm = dissect(A);
