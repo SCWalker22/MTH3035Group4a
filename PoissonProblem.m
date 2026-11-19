@@ -6,8 +6,9 @@ del_x = 1 / m; % grid spacing
 alpha = 2; % coefficient alpha
 N = m * m; % number of matrix elements
 
-ir = (mod(1:N, m) + floor((0:N - 1) / m) * m + 1); % periodic wrap, ir is i right
-il = (mod(-1:N - 2, m) + floor((0:N - 1) / m) * m + 1); % periodic wrap, il is i left
+flr = floor((0:N - 1) / m) * m;
+ir = mod(1:N, m) + flr + 1; % periodic wrap, ir is i right
+il = mod(-1:N - 2, m) + flr + 1; % periodic wrap, il is i left
 ju = mod(m:N - 1 + m, N) + 1; % periodic wrap, ju is j up
 jd = mod(-m:N - 1 - m, N) + 1; % periodic wrap, jd is j down
 
@@ -27,5 +28,5 @@ spy(A)
 %disp(full(A))
 
 r = -del_x ^ 2 * randi([0 1], N, 1);  %ones(N,1);
-f = A \ r;
+flr = A \ r;
 %disp(f)
