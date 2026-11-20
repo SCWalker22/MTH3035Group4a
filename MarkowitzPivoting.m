@@ -1,34 +1,66 @@
 function [P, Q] = MarkowitzPivoting(A)
-    [m, n] = size(A); % Find the size of the matrix
-    rperm = 1:n;
-    cperm = 1:n;
+    % Markowitz tolerance (range: [1e-4, 0.999], set to 0 to ignore)    
+    u = 0.0078125;
 
-    %Create duplicate of array A
-    B = A(rperm, cperm);
-    best_row = 1;
-    best_col = 1;
-
-    %Create initial permutations for rows and cols
-    best_rperm = 1:n;
-    best_cperm = 1:n;
+    [m, n] = size(A); % Matrix dimensions (assuming square matrix?)
     
-    for p = 1:n %Loop over pivots - we will have to use n pivots
-        best_markowitz_cost = inf; %Set initial cost infinite, so we always find a pivot
-        A = B(best_rperm, best_cperm); %Rearrange A as defined so far
-        for r = p:n %Loop through Rows
-            for c = p:n % Loop through cols
-                if A(r, c) ~= 0 % If this entry is non-zero
-                    c_i = sum(sign(A(r, p:n))); %Num zeros in col
-                    r_i = sum(sign(A(p:n, c))); % Num zeros in row
-                    markowitz_cost = (c_i - 1)*(r_i - 1); %Calculate Markowitz cost
-                    if markowitz_cost < best_markowitz_cost %Update best pivot if needed
-                        best_row = r;
-                        best_col = c;
-                        best_markowitz_cost = markowitz_cost;
+    % Duplicate of array A
+    B = A;
+
+    best_row = -1;
+    best_col = -1;
+    
+    % Initial permutations for rows and cols
+    best_rperm = 1:m;
+    best_cperm = 1:n;
+
+    % Loop over max(m, n) pivots
+    for p = 1:max(m, n)
+        % Set initial cost infinite, so we always find a pivot
+        best_markowitz_cost = Inf;
+        
+        % Lowest cost is 0, if a 0 cost pivot is found, break from loops
+        zero_cost = false;
+
+        % Rearrange A
+        A = B(best_rperm, best_cperm); 
+        
+        % Loop through remaining rows
+        for r = p:m
+            % Loop through remaining cols
+            for c = p:n
+                % Ignore non-zero pivots
+                if A(r, c) ~= 0
+                    nnz_r = nnz(A(p:m, c)); % Number of non-zeros in row
+                    nnz_c = nnz(A(r, p:n)); % Number of non-zeros in col
+                    
+                    % Markowitz tolerance (entries always positive)
+                    if A(r, c) >= u * A(m, c)
+                        % Calculate Markowitz cost
+                        markowitz_cost = (nnz_r - 1) * (nnz_c - 1);
+                        
+                        % Break if zero cost is found
+                        if markowitz_cost == 0
+                            best_row = r;
+                            best_col = c;
+                            zero_cost = true;
+                            break
+                        % Update best pivot
+                        elseif markowitz_cost < best_markowitz_cost
+                            best_row = r;
+                            best_col = c;
+                            best_markowitz_cost = markowitz_cost;
+                        end
                     end
                 end
             end
+
+            % Break if zero cost is found
+            if zero_cost
+                break
+            end
         end
+
         % Update the row, col permutations to the optimum
         previous_r = best_rperm(p);
         previous_c = best_cperm(p);
@@ -37,10 +69,11 @@ function [P, Q] = MarkowitzPivoting(A)
         best_rperm(best_row) = previous_r;
         best_cperm(best_col) = previous_c;
     end
-    P = best_rperm; % Return optimal permutations
+
+    % Return optimal permutations
+    P = best_rperm;
     Q = best_cperm;
 end
-
 
 %A = [11, 0, 0, 0, 0, 1, 1;
  %   0, 12, 1, 1, 1, 0, 1;
@@ -51,5 +84,3 @@ end
     %1, 1, 1, 1, 0, 0, 17];
 
 %[P, Q] = MarkowitzPivoting(A)
-
-
