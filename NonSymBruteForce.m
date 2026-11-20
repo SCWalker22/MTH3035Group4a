@@ -1,4 +1,8 @@
-% Calculates total fill-in of matrix
+% Find the (or one of) the optimal permutations by cycling through each one
+% and calculating it's fill-in, then get the permutations with minimum 
+% fill-in.
+% Compare the optimal permutation with the ordering given by chosen
+% ordering algorithms.
 
 % plots sparsity of matrix and lower matrix
 function plot_sparsity(matrix, name, m, index)
@@ -48,9 +52,12 @@ for i = 1:k
 end
 
 % optimal A
-[~, I] = min(fill_ins); % row index with minimum fill-in
-opt_perm = p(I, :);
+min_ids = find(fill_ins == min(fill_ins))'; % row indexes with min fill-in
+opt_perm = p(min_ids(1), :); % choosing first permutation with min fill-in
 A_opt = A(opt_perm, opt_perm);
+
+disp("Percentage of permutations with minimum fill-in (= " + ...
+    fill_ins(min_ids(1)) + "): " + length(min_ids) / k)
 
 % RCM A
 RCM_perm = symrcm(A);
