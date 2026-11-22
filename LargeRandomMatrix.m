@@ -4,7 +4,7 @@ n_iterations = 100; %Number of random matrices to generate & optimise
 n_bins = 20; % Number of bins for histogram
 
 % Set desired size of matrices
-n_rows = 100;
+n_rows = 1000;
 n_cols = n_rows;
 
 % Arrays to store results
@@ -60,13 +60,19 @@ if include_original
     x_right = max(max(original_fill_ins), x_right);
 end
 
+% Start graphing
 figure()
+
+% If flag has been set to include original, plot this first
 if include_original
     subplot(4, 1, 1)
     histogram(original_fill_ins, n_bins)
     title('Original Fill-in')
     xlim([x_left, x_right])
 end
+
+% Subplots of the form subplot(3 + include_original, 1, i + include_original)
+% This adds an extra subplot if showing the original, and moves all other plots down
 
 subplot(3 + include_original, 1, 1 + include_original)
 histogram(amd_fill_ins, n_bins)
