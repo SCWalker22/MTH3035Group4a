@@ -1,4 +1,4 @@
-S = 100*sprand(1000, 1000, 0.1) + 50*eye(1000);
+S = 100*sprand(1000, 1000, 0.1) + 50*eye(1000); %Add to trasnpose
 
 % check A spd
 [A_L, flag] = chol(A,'lower');

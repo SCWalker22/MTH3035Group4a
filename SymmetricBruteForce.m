@@ -134,54 +134,67 @@ rcm_fill_in = nnz(rcm_L) - nnz(tril(A(rcm_perm,rcm_perm)));
 pivot_L = chol(A(pivot_row_perm, pivot_col_perm), 'lower');
 pivot_fill_in = nnz(pivot_L) - nnz(tril(A(pivot_row_perm, pivot_col_perm)));
 
+dissect_perm = dissect(A);
+dissect_L = chol(A(dissect_perm, dissect_perm), 'lower');
+dissect_fill_in = nnz(dissect_L) - nnz(tril(A(dissect_perm, dissect_perm)));
+
 
 figure
 
-subplot(2,5,1)
+subplot(2,6,1)
 spy(A)
 title('A')
 
-subplot(2,5,2)
+subplot(2,6,2)
 spy(A(best_perm,best_perm))
 title('optimal A')
 
-subplot(2,5,3) 
+subplot(2,6,3) 
 spy(A(amd_perm,amd_perm))
 title('AMD A')
 
-subplot(2,5,4)
+subplot(2,6,4)
 spy(A(rcm_perm, rcm_perm))
 title('RCM A')
 
-subplot(2, 5, 5)
+subplot(2, 6, 5)
 spy(A(pivot_row_perm, pivot_col_perm))
 title('Pivoting A')
 
-subplot(2,5,6) 
+subplot(2, 6, 6)
+spy(A(dissect_perm, dissect_perm))
+title('Dissect A')
+
+subplot(2,6,7) 
 spy(A_L)
 title('chol A')
 xlabel(sprintf('Fill-in: %d', original_fill_in))
 
-subplot(2,5,7) 
+subplot(2,6,8) 
 spy(best_perm_L)
 title('chol optimal A')
 xlabel(sprintf('Fill-in: %d', best_perm_fill_in))
 
-subplot(2,5,8) 
+subplot(2,6,9) 
 spy(amd_L)
 title('chol AMD A')
 xlabel(sprintf('Fill-in: %d', amd_fill_in))
 
 
-subplot(2,5,9) 
+subplot(2,6,10) 
 spy(rcm_L)
 title('chol RCM A')
 xlabel(sprintf('Fill-in: %d', rcm_fill_in))
 
-subplot(2, 5, 10)
+subplot(2,6,11)
 spy(pivot_L)
 title('chol Pivot A')
 xlabel(sprintf('Fill-in: %d', pivot_fill_in))
+
+subplot(2, 6, 12)
+spy(dissect_L)
+title('chol dissect A')
+xlabel(sprintf('Fill-in: %d', dissect_fill_in))
 
 %todo
 % add nested dissection
