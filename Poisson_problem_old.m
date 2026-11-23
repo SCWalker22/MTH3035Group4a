@@ -14,8 +14,8 @@ r = -del_x^2 * randi([0 1], N, 1)   %ones(N,1);
 rows = zeros(5*N,1); cols = zeros(5*N,1); vals = zeros(5*N,1);
 
 for I= 1:N
-    ir = mod(I,m) + floor((I-1)/m)*m + 1; % i+1, periodic wrap, ir is i right
-    il = mod(I-2,m) + floor((I-1)/m)*m + 1; % i-1, periodic wrap, il is i left
+    ir = mod(I,N) + 1; % i+1, periodic wrap, ir is i right
+    il = mod(I-2,N) + 1; % i-1, periodic wrap, il is i left
     ju = mod(I-1+m,N) + 1; % j+1, periodic wrap, ju is j up
     jd = mod(I-1-m,N) + 1; % j-1, periodic wrap, jd is j down
        
