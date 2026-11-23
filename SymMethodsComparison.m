@@ -1,11 +1,14 @@
-% Notes:
-%   - MarkowitzPivoting slowing down higher n runs
-%   - random bins calc function used, there's probably a simpler one.
-%   - random quantities chosen as examples (for analysis)
+% Produces histogram plots for fill-ins of each ordering method.
+% Also displays some fill-in quantities for each method.
+
+% Used to compare how well ordering methods perform against each other.
 
 n = 100; % square matrix dimensions
 density =  2 / n; % density of generated matrix
 t = 1000; % test number
+
+% add to method arrays to plot original matrix
+%id_perm = @(A) 1:n; % returns original permutation of matrix
 
 % cell array of ordering method functions
 methods = {@symrcm, @symamd, @MarkowitzPivoting, @dissect}; 
@@ -17,12 +20,13 @@ fill_ins = zeros(t, m);
 
 % testing
 for i = 1:t
+    %rng(i); % set seed for reproducibility
+
     % generate random n x n spd matrix with density
-    A = spones(sprandsym(n, density)) + n * eye(n);
+    A = sprandsym(n, density) + n * eye(n);
 
     % fill-in for each method
     for j = 1:m
-        % reorder A
         perm = methods{j}(A);
         A_perm = A(perm, perm);
 
@@ -51,16 +55,16 @@ end
 figure
 sgtitle("Permutation count for each fill-in value")
 
-bins = floor(15 * log10(n + 1) - 10); % histogram bins
-[min_fill_in, max_fill_in] = bounds(fill_ins(:)); % min and max fill-in overall
+bins = max(3, floor(15 * log10(n + 1) - 10)); % histogram bins
+[min_fill_in, max_fill_in] = bounds(fill_ins(:)); % min and max fill-in
 
 for i = 1:m
     subplot(2, ceil(m / 2), i)
     h = histfit(fill_ins(:, i), bins);
-    h(2).Color = [1 0 0];
+    h(2).Color = "red";
     subtitle(method_names(i))
     ylabel("Number of permutations");
     xlabel("Fill-in");
-    xlim([min_fill_in, max_fill_in]); % useful to compare distributions
-    %xlim([min_fill_in, Inf]) % useful to see individual distributions
+    %xlim([min_fill_in, max_fill_in]); % useful to compare distributions
+    xlim([min_fill_in, Inf]) % useful to see individual distributions
 end
