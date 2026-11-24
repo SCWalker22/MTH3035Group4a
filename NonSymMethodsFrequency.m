@@ -102,5 +102,3 @@ for i = 1:m
 
     disp(method_names(i) + " optimal method count: " + c)
 end
-    disp(method_names(i) + " optimal method count: " + c)
-end
