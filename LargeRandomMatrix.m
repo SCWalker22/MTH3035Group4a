@@ -6,15 +6,16 @@ n_bins = 20; % Number of bins for histogram
 % Set desired size of matrices
 n_rows = 100;
 n_cols = n_rows;
+sparsity = 10/n_rows;
 
 methods = ["Original", "Approximate Minimum Degree", "Reverse Cuthill-Mckee", "Markowitz Pivoting"];
 
 % Arrays to store results
-fill_ins = zeros(n_iterations, 3 + include_original);
+fill_ins = zeros(n_iterations, length(methods) + include_original - 1);
 
 % Loop through n iterations
 for i = 1:n_iterations
-    S = sprand(n_rows, n_cols, 0.1) + eye(n_rows);
+    S = sprand(n_rows, n_cols, sparsity) + eye(n_rows);
     A_temp = full(S);
     A = transpose(A_temp)*A_temp; % Ensure A is SPD by taking A^T A
 
@@ -58,6 +59,6 @@ figure()
 for i = 1:n
     subplot(n, 1, i)
     histogram(fill_ins(:, i), n_bins)
-    title(methods(i + 1 - include_original))
+    title(methods(i + include_original - 1))
     xlim([x_left, x_right])
 end
