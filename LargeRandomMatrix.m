@@ -4,15 +4,13 @@ n_iterations = 100; %Number of random matrices to generate & optimise
 n_bins = 20; % Number of bins for histogram
 
 % Set desired size of matrices
-n_rows = 1000;
+n_rows = 100;
 n_cols = n_rows;
 
+methods = ["Original", "Approximate Minimum Degree", "Reverse Cuthill-Mckee", "Markowitz Pivoting"];
+
 % Arrays to store results
-original_fill_ins = zeros(n_iterations, 1);
-amd_fill_ins = zeros(n_iterations, 1);
-rcm_fill_ins = zeros(n_iterations, 1);
-pivot_fill_ins = zeros(n_iterations, 1);
-partial_pivot_fill_ins = zeros(n_iterations, 1);
+fill_ins = zeros(n_iterations, 3 + include_original);
 
 % Loop through n iterations
 for i = 1:n_iterations
@@ -38,58 +36,28 @@ for i = 1:n_iterations
     pivot_L = chol(A(pivot_row_perm, pivot_col_perm), 'lower');
     pivot_fill_in = nnz(pivot_L) - nnz(tril(A(pivot_row_perm, pivot_col_perm)));
 
-    % Compute permutation using Partial Pivoting
-    [partial_pivot_row_perm, partial_pivot_col_perm] = MarkowitzPivoting(A);
-    partial_pivot_L = chol(A(partial_pivot_row_perm, partial_pivot_col_perm), 'lower');
-    partial_pivot_fill_in = nnz(pivot_L) - nnz(tril(A(partial_pivot_row_perm, partial_pivot_col_perm)));
-    
+
     % Add num non-zeros to arrays
-    original_fill_ins(i) = original_fill_in;
-    amd_fill_ins(i) = amd_fill_in;
-    rcm_fill_ins(i) = rcm_fill_in;
-    pivot_fill_ins(i) = pivot_fill_in;
-    partial_pivot_fill_ins(i) = partial_pivot_fill_in;
+    if include_original
+        fill_ins(i, 1) = original_fill_in;
+    end
+    fill_ins(i, 1+include_original) = amd_fill_in;
+    fill_ins(i, 2+include_original) = rcm_fill_in;
+    fill_ins(i, 3+include_original) = pivot_fill_in;
 end
 
 % Find min and max of x, so all graphs line up
-x_left = min(min(min(amd_fill_ins), min(rcm_fill_ins)), min(pivot_fill_ins));
-x_right = max(max(max(amd_fill_ins), max(rcm_fill_ins)), max(pivot_fill_ins));
-
-if include_original
-    x_left = min(min(original_fill_ins), x_left);
-    x_right = max(max(original_fill_ins), x_right);
-end
+x_left = min(min(fill_ins));
+x_right = max(max(fill_ins));
 
 % Start graphing
 figure()
 
-% If flag has been set to include original, plot this first
-if include_original
-    subplot(4, 1, 1)
-    histogram(original_fill_ins, n_bins)
-    title('Original Fill-in')
+[m, n] = size(fill_ins);
+
+for i = 1:n
+    subplot(n, 1, i)
+    histogram(fill_ins(:, i), n_bins)
+    title(methods(i + 1 - include_original))
     xlim([x_left, x_right])
 end
-
-% Subplots of the form subplot(3 + include_original, 1, i + include_original)
-% This adds an extra subplot if showing the original, and moves all other plots down
-
-subplot(3 + include_original, 1, 1 + include_original)
-histogram(amd_fill_ins, n_bins)
-title('Approximate Minimum Degree')
-xlim([x_left, x_right])
-
-subplot(3 + include_original, 1, 2 + include_original)
-histogram(rcm_fill_ins, n_bins)
-title('Reverse Cuthill-McKee')
-xlim([x_left, x_right])
-
-subplot(3 + include_original, 1, 3 + include_original)
-histogram(pivot_fill_ins, n_bins)
-title('Markowitz Pivoting')
-xlim([x_left, x_right])
-
-% subplot(4, 1, 4)
-% histogram(partial_pivot_fill_ins, n_bins)
-% title('Partial Pivoting')
-% xlim([x_left, x_right])
