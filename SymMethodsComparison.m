@@ -4,7 +4,7 @@
 % Used to compare how well ordering methods perform against each other.
 
 n = 100; % square matrix dimensions
-density =  2 / n; % density of generated matrix
+density =  0.1; % density of generated matrix
 t = 1000; % test number
 
 % add to method arrays to plot original matrix
@@ -20,7 +20,7 @@ fill_ins = zeros(t, m);
 
 % testing
 for i = 1:t
-    %rng(i); % set seed for reproducibility
+    rng(i); % set seed for reproducibility
 
     % generate random n x n spd matrix with density
     A = sprandsym(n, density) + n * eye(n);
@@ -59,12 +59,12 @@ bins = max(3, floor(15 * log10(n + 1) - 10)); % histogram bins
 [min_fill_in, max_fill_in] = bounds(fill_ins(:)); % min and max fill-in
 
 for i = 1:m
-    subplot(2, ceil(m / 2), i)
+    subplot(m, 1, i)
     h = histfit(fill_ins(:, i), bins);
     h(2).Color = "red";
     subtitle(method_names(i))
-    ylabel("Number of permutations");
+    ylabel("No. permutations");
     xlabel("Fill-in");
-    %xlim([min_fill_in, max_fill_in]); % useful to compare distributions
-    xlim([min_fill_in, Inf]) % useful to see individual distributions
+    xlim([min_fill_in, max_fill_in]); % useful to compare distributions
+    %xlim([min_fill_in, Inf]) % useful to see individual distributions
 end
