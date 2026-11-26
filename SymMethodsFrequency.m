@@ -9,7 +9,7 @@
 % when a method produces fill-in lower than the threshold, consider it to 
 % have produced an 'optimal' permutation.
 
-% Use plot tolerance 'p_tol' to ignore the 'n x n - (2 * p_tol + n)' lowest 
+% Use plot tolerance 'p_tol' to ignore the 'n x n - 2(p_tol + n)' lowest 
 % entries (filters highest values in frequency matrix to see shape of 
 % 'optimal' matrices).
 %   - e.g. if you want to plot the 100 most frequent non-diagonal values, 
@@ -17,21 +17,23 @@
 % Note that the actual number of points plotted will have a minimum of 2 *
 % p_tol but can have a high ceiling - if the lowest frequency number 
 % that passes the threshold is very common in the frequency matrix.
-%   - a good f_tol should produce a low-medium optimal method count a 
-%     method to see an accurate frequency plot.
+%   - a good f_tol should produce a low optimal method count for a method
+%     to see an accurate frequency plot.
 
 n = 100; % square matrix dimensions
-density =  2 / n; % density of generated matrix
-t = 2500; % test number
+density =  0.1; % density of generated matrix
+t = 10000; % test number
 
 % cell array of ordering method functions
-methods = {@symrcm, @symamd, @MarkowitzPivoting, @dissect}; 
-method_names = ["RCM", "AMD", "Markowitz", "Dissection"];
+%methods = {@symrcm, @symamd, @MarkowitzPivoting, @dissect}; 
+%method_names = ["RCM", "AMD", "Markowitz", "Dissection"];
+methods = {@symamd, @dissect};
+method_names = ["AMD", "Dissection"];
 m = length(methods);
 
 % if a permutation is found with fill-in <= f_tol, found an 'optimal' order
 % use 'SymMethodsComparison.m' to get a good f_tol value
-f_tol = 50;
+f_tol = 1400;
 
 % frequency of matrix for each method when method produces 'optimal' perm
 method_A_freq = repmat({zeros(n, n)}, m, 1);
@@ -43,7 +45,7 @@ p_tol = 100;
 
 % testing
 for i = 1:t
-    %rng(i); % set seed for reproducibility
+    rng(i); % set seed for reproducibility
 
     % generate random n x n spd matrix with density
     A = sprandsym(n, density) + n * eye(n);
